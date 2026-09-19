@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'master',
+                    url: 'https://github.com/aishu-java/java-devops-demo.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building Java application...'
+            }
+        }
+    }
+}
