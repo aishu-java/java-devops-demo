@@ -28,6 +28,14 @@ pipeline {
             sh 'mvn clean package'
         }
     }
+
+    stage('Docker Build') {
+    steps {
+        dir('java-devops-demo') {
+            sh 'docker build -t java-devops-demo:jenkins-${BUILD_NUMBER} .'
+        }
+    }
+}
 }
     }
 }
