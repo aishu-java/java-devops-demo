@@ -28,7 +28,7 @@ pipeline {
             sh 'mvn clean package'
         }
     }
-
+      }
     stage('Docker Build') {
     steps {
         dir('java-devops-demo') {
