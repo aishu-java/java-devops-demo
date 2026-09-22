@@ -22,10 +22,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'
-            }
+      stage('Build') {
+    steps {
+        dir('java-devops-demo') {
+            sh 'mvn clean package'
         }
+    }
+}
     }
 }
