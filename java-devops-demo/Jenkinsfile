@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven-3.9.6'
+        maven 'Maven-3.9'
     }
+
+    stages {
 
     stages {
 
@@ -11,6 +13,13 @@ pipeline {
             steps {
                 git branch: 'master',
                     url: 'https://github.com/aishu-java/java-devops-demo.git'
+            }
+        }
+
+      stage('Check Workspace') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
             }
         }
 
