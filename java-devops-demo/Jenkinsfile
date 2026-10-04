@@ -52,6 +52,11 @@ stage('Docker Login') {
             '''
         }
     }
+}stage('Docker Push') {
+    steps {
+        sh 'docker tag java-devops-demo:jenkins-${BUILD_NUMBER} krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
+        sh 'docker push krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
+    }
 }
 }
     }
