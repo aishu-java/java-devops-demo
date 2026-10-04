@@ -5,7 +5,6 @@ pipeline {
         maven 'Maven-3.9.6'
     }
 
-    
     stages {
 
         stage('Checkout') {
@@ -15,49 +14,46 @@ pipeline {
             }
         }
 
-      stage('Check Workspace') {
+        stage('Build') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
+                dir('java-devops-demo') {
+                    sh 'mvn clean package'
+                }
             }
         }
 
-      stage('Build') {
-    steps {
-        dir('java-devops-demo') {
-            sh 'mvn clean package'
+        stage('Docker Build') {
+            steps {
+                dir('java-devops-demo') {
+                    sh 'docker build -t java-devops-demo:jenkins-${BUILD_NUMBER} .'
+                }
+            }
         }
-    }
-      }
-    stage('Docker Build') {
-    steps {
-        dir('java-devops-demo') {
-            sh 'docker build -t java-devops-demo:jenkins-${BUILD_NUMBER} .'
-        }
-    }
-}
-stage('Docker Login') {
-    steps {
-        withCredentials([
-            usernamePassword(
-                credentialsId: 'dockerhub-credentials',
-                usernameVariable: 'DOCKER_USERNAME',
-                passwordVariable: 'DOCKER_PASSWORD'
-            )
-        ]) {
-            sh '''
-                echo "$DOCKER_PASSWORD" | docker login \
-                    -u "$DOCKER_USERNAME" \
-                    --password-stdin
-            '''
-        }
-    }
-}stage('Docker Push') {
-    steps {
-        sh 'docker tag java-devops-demo:jenkins-${BUILD_NUMBER} krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
-        sh 'docker push krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
-    }
-}
-}
-    }
 
+        stage('Docker Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login \
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'docker tag java-devops-demo:jenkins-${BUILD_NUMBER} krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
+
+                sh 'docker push krishna143radha/java-devops-demo:jenkins-${BUILD_NUMBER}'
+            }
+        }
+    }
+}
